@@ -1,0 +1,12 @@
+<script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sessionID = "{{this.getSessionID()}}";
+        const kountConfig = {
+            clientID: "{{this.getClientID()}}",
+            environment: "{{this.isTestMode()}}",
+            isSinglePageApp: false,
+        };
+        
+        kountSDK(kountConfig, sessionID);
+      });
+</script>

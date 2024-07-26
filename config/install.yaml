@@ -1,0 +1,22 @@
+XLite\Model\Config:
+  - name: client_id
+    category: Iidev\Kount
+    type: text
+    orderby: 100
+    translations:
+      - code: en
+        option_name: "Client ID"
+  - name: api_key
+    category: Iidev\Kount
+    type: text
+    orderby: 100
+    translations:
+      - code: en
+        option_name: "API Key"
+  - name: test_mode
+    category: Iidev\Kount
+    type: XLite\View\FormField\Input\Checkbox\OnOffWithoutOffLabel
+    orderby: 200
+    translations:
+      - code: en
+        option_name: 'Test Mode'
