@@ -18,7 +18,7 @@ class TrackingSnippet extends AView
     public function getJSFiles()
     {
         $list = parent::getJSFiles();
-        $list[] = 'modules/Iidev/Kount/kount-web-client-sdk-bundle.js';
+        $list[] = 'modules/Iidev/Kount/scripts/kount-web-client-sdk-bundle.js';
 
         return $list;
     }
