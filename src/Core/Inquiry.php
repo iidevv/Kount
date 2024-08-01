@@ -13,12 +13,13 @@ class Inquiry
 
     public function doRequest($order, $sessionID, $ipAddress)
     {
-        $transactionId = $order->getPaymentTransactions()->last()->getTransactionId();
+        $transactionId = $order->getPaymentTransactions()?->last()?->getTransactionId();
+        
         if (!$transactionId)
             return;
 
         $transaction = Database::getRepo('Iidev\CloverPayments\Model\Payment\XpcTransactionData')->findOneBy([
-            'transaction_id' => $transactionId,
+            'transaction' => $transactionId,
         ]);
 
         if (!$transaction)
