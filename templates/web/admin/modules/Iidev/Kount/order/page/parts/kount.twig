@@ -1,0 +1,51 @@
+{##
+ # @ListChild (list="order.operations", weight="10")
+ #}
+{% if this.order.getInquiry() %}
+	{% for inquiry in this.order.getInquiry() %}
+		<div class="table-wrapper" style="margin: 30px 0; max-width: 850px;">
+			<h3 style="padding: 10px;">
+				<span style="margin-right: 5px;">Kount</span>
+				{% if inquiry.auto == 'A' %}
+					<img src="{{ asset('modules/Iidev/Kount/icons/clean.svg') }}" alt="Clean"/>
+				{% endif %}
+				{% if inquiry.auto == 'R' %}
+					<img src="{{ asset('modules/Iidev/Kount/icons/review.svg') }}" alt="Review"/>
+				{% endif %}
+				{% if inquiry.auto == 'D' %}
+					<img src="{{ asset('modules/Iidev/Kount/icons/fraud.svg') }}" alt="Fraud"/>
+				{% endif %}
+			</h3>
+			<table cellspacing="0" class="list" style="width: 100%;">
+				<tbody>
+					<tr>
+						<td>Transaction ID</td>
+						<td>
+							<a href="{{ this.order.getRequestUrl() ~ inquiry.transactionId }}" target="_blank">{{ inquiry.transactionId }}</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Score</td>
+						<td>{{ inquiry.score }}</td>
+					</tr>
+					<tr>
+						<td>Omniscore</td>
+						<td>{{ inquiry.omniscore }}</td>
+					</tr>
+					<tr>
+						<td>Warnings</td>
+						<td>{{ inquiry.warnings }}</td>
+					</tr>
+					<tr>
+						<td>IP Address</td>
+						<td><a href="https://whatismyipaddress.com/ip/{{ inquiry.ipAddress }}" target="_blank">{{ inquiry.ipAddress }}</a></td>
+					</tr>
+					<tr>
+						<td>User agent</td>
+						<td><span style="display:block; max-width: 250px">{{ inquiry.userAgent }}</span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	{% endfor %}
+{% endif %}

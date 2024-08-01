@@ -6,7 +6,6 @@ use XLite\InjectLoggerTrait;
 use XLite\Core\Config;
 use Iidev\Kount\Model\InquiryOrders;
 use XLite\Core\Database;
-use XLite\Model\Payment\Transaction;
 
 class Inquiry
 {
@@ -15,6 +14,9 @@ class Inquiry
     public function doRequest($order, $sessionID, $ipAddress)
     {
         $transactionId = $order->getPaymentTransactions()->last()->getTransactionId();
+        if (!$transactionId)
+            return;
+
         $transaction = Database::getRepo('Iidev\CloverPayments\Model\Payment\XpcTransactionData')->findOneBy([
             'transaction_id' => $transactionId,
         ]);
@@ -24,6 +26,7 @@ class Inquiry
 
         try {
             $profile = $order->getProfile();
+            $name = $profile->getBillingAddress()->getFirstname() ." ".$profile->getBillingAddress()->getLastname();
 
             $billingAddress = $profile->getBillingAddress();
             $shippingAddress = $profile->getShippingAddress();
@@ -50,6 +53,7 @@ class Inquiry
                 $shippingAddress->getCountry()->getCode(),
             );
 
+            $inquiry->setName($name);
             $inquiry->setBillingPhoneNumber($profile->getBillingAddress()->getPhone());
             $inquiry->setShippingPhoneNumber($profile->getShippingAddress()->getPhone());
             $inquiry->setCurrency($order->getCurrency()->getCode());
@@ -70,11 +74,6 @@ class Inquiry
             } else {
                 $this->saveInquiryOrder($order->getOrderId(), $response);
             }
-
-
-            // A - clean.svg
-            // R - review.svg
-            // D - fraud.svg
 
         } catch (\Exception $e) {
             $this->getLogger('Kount')->error('Error Response: ' . $e->getMessage());
@@ -105,7 +104,7 @@ class Inquiry
             $product = $item->getProduct();
 
             $name = $this->getValidLengthString($item->getName(), 255);
-            $description = $this->getValidLengthString($product->getBriefDescription(), 255);
+            $description = $this->getValidLengthString($product->getDescription(), 255);
             $price = $this->getValidNumber($product->getPrice());
 
             $cart[] = new \Kount_Ris_Data_CartItem($this->getCategory($product), $name, $description, $item->getAmount(), $price);
