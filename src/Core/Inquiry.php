@@ -18,6 +18,13 @@ class Inquiry
         if (!$transactionId)
             return;
 
+        $isInquiryExist = Database::getRepo('Iidev\Kount\Model\InquiryOrders')->findOneBy([
+            'orderid' => $order->getOrderId(),
+        ]);
+
+        if ($isInquiryExist)
+            return;
+
         $transaction = Database::getRepo('Iidev\CloverPayments\Model\Payment\XpcTransactionData')->findOneBy([
             'transaction' => $transactionId,
         ]);
@@ -140,12 +147,6 @@ class Inquiry
 
     private function saveInquiryOrder($orderid, $data)
     {
-        $isInquiryExist = Database::getRepo('Iidev\Kount\Model\InquiryOrders')->findOneBy([
-            'orderid' => $orderid,
-        ]);
-        if ($isInquiryExist)
-            return;
-
         $inquiry = new InquiryOrders();
 
         $inquiry->setOrderid($orderid);
