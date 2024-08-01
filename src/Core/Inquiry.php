@@ -26,7 +26,7 @@ class Inquiry
 
         try {
             $profile = $order->getProfile();
-            $name = $profile->getBillingAddress()->getFirstname() ." ".$profile->getBillingAddress()->getLastname();
+            $name = $profile->getBillingAddress()->getFirstname() . " " . $profile->getBillingAddress()->getLastname();
 
             $billingAddress = $profile->getBillingAddress();
             $shippingAddress = $profile->getShippingAddress();
@@ -54,6 +54,8 @@ class Inquiry
             );
 
             $inquiry->setName($name);
+            $inquiry->setUnique($profile->getProfileId());
+            $inquiry->setOrderNumber($order->getOrderNumber());
             $inquiry->setBillingPhoneNumber($profile->getBillingAddress()->getPhone());
             $inquiry->setShippingPhoneNumber($profile->getShippingAddress()->getPhone());
             $inquiry->setCurrency($order->getCurrency()->getCode());
@@ -104,7 +106,7 @@ class Inquiry
             $product = $item->getProduct();
 
             $name = $this->getValidLengthString($item->getName(), 255);
-            $description = $this->getValidLengthString($product->getDescription(), 255);
+            $description = $item->getSku();
             $price = $this->getValidNumber($product->getPrice());
 
             $cart[] = new \Kount_Ris_Data_CartItem($this->getCategory($product), $name, $description, $item->getAmount(), $price);
@@ -123,14 +125,14 @@ class Inquiry
 
     private function getValidNumber($value)
     {
-        return str_replace('.', '', strval($value));
+        return intval(floatval($value) * 100);
     }
 
     private function getCategory($product)
     {
         $categories = $product->getCategories();
 
-        $lastCategory = end($categories);
+        $lastCategory = reset($categories);
 
         return $lastCategory->getName();
     }
