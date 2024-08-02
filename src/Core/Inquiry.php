@@ -14,7 +14,7 @@ class Inquiry
     public function doRequest($order, $sessionID, $ipAddress)
     {
         $transactionId = $order->getPaymentTransactions()?->last()?->getTransactionId();
-        
+
         if (!$transactionId)
             return;
 
@@ -77,6 +77,18 @@ class Inquiry
             $inquiry->setCart($this->getCartItems($order->getItems()));
             $inquiry->setAuth('A');
 
+            // CVV matchs by default for post transaction check
+            $inquiry->setCvvr('M');
+
+            $transactionData = $this->getTransactionDetails($transactionId);
+
+            if (isset($transactionData['zip-check'])) {
+                $inquiry->setAvsz(($transactionData['zip-check'] === 'pass') ? 'M' : 'N');
+            }
+            if (isset($transactionData['address-check'])) {
+                $inquiry->setAvst(($transactionData['address-check'] === 'pass') ? 'M' : 'N');
+            }
+
             $response = $inquiry->getResponse();
 
             if ($response->getMode() === 'E') {
@@ -100,6 +112,32 @@ class Inquiry
 
         return $settings;
     }
+
+    private function getTransactionDetails($transactionId)
+    {
+        $transactionDataCollection = Database::getRepo('XLite\Model\Payment\TransactionData')->findBy([
+            'transaction' => $transactionId,
+        ]);
+
+        if (!$transactionDataCollection)
+            return [];
+
+        $data = [];
+
+        foreach ($transactionDataCollection as $transactionData) {
+            switch ($transactionData->getName()) {
+                case 'zip-check':
+                    $data['zip-check'] = $transactionData->getValue();
+                    break;
+                case 'address-check':
+                    $data['address-check'] = $transactionData->getValue();
+                    break;
+            }
+        }
+
+        return $data;
+    }
+
 
     private function getRequestUrl()
     {
