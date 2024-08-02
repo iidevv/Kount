@@ -38,14 +38,24 @@
 					</tr>
 					<tr>
 						<td>IP Address</td>
-						<td><a href="https://whatismyipaddress.com/ip/{{ inquiry.ipAddress }}" target="_blank">{{ inquiry.ipAddress }}</a></td>
+						<td>
+							<a href="https://whatismyipaddress.com/ip/{{ inquiry.ipAddress }}" target="_blank">{{ inquiry.ipAddress }}</a>
+						</td>
 					</tr>
 					<tr>
 						<td>User agent</td>
-						<td><span style="display:block; max-width: 250px">{{ inquiry.userAgent }}</span></td>
+						<td>
+							<span style="display:block; max-width: 250px">{{ inquiry.userAgent }}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>Billing / Card Zip code</td>
+						<td>
+							{{this.order.getBillingZipcode()}} / {{ inquiry.zipcode }}
+						</td>
 					</tr>
 				</tbody>
-			</table>
-		</div>
-	{% endfor %}
-{% endif %}
+			</td>
+		</tbody>
+	</tr>
+</tbody></table></div>{% endfor %}{% endif %}

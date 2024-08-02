@@ -89,12 +89,18 @@ class Inquiry
                 $inquiry->setAvst(($transactionData['address-check'] === 'pass') ? 'M' : 'N');
             }
 
+            $cardZipcode = '';
+
+            if (isset($transactionData['card-zip'])) {
+                $cardZipcode = $transactionData['card-zip'];
+            }
+
             $response = $inquiry->getResponse();
 
             if ($response->getMode() === 'E') {
                 $this->getLogger('Kount')->error('Error response: ' . __FUNCTION__ . $response);
             } else {
-                $this->saveInquiryOrder($order->getOrderId(), $response);
+                $this->saveInquiryOrder($order->getOrderId(), $response, $cardZipcode);
             }
 
         } catch (\Exception $e) {
@@ -126,6 +132,9 @@ class Inquiry
 
         foreach ($transactionDataCollection as $transactionData) {
             switch ($transactionData->getName()) {
+                case 'card-zip':
+                    $data['card-zip'] = $transactionData->getValue();
+                    break;
                 case 'zip-check':
                     $data['zip-check'] = $transactionData->getValue();
                     break;
@@ -183,7 +192,7 @@ class Inquiry
         return $lastCategory->getName();
     }
 
-    private function saveInquiryOrder($orderid, $data)
+    private function saveInquiryOrder($orderid, $data, $zipcode)
     {
         $inquiry = new InquiryOrders();
 
@@ -195,6 +204,7 @@ class Inquiry
         $inquiry->setAuto($data->getAuto());
         $inquiry->setIpAddress($data->getIPAddress());
         $inquiry->setUserAgent($data->getUserAgentString());
+        $inquiry->setZipcode($zipcode);
 
         Database::getEM()->persist($inquiry);
         Database::getEM()->flush();

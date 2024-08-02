@@ -30,4 +30,11 @@ class Order extends \XLite\Model\Order
     {
         return Config::getInstance()->Iidev->Kount->test_mode ? "https://awc.test.kount.net/workflow/detail.html?id=" : "https://awc.kount.net/workflow/detail.html?id=";
     }
+
+    public function getBillingZipcode()
+    {
+        $profile = $this->getProfile();
+        
+        return $profile?->getBillingAddress()?->getZipcode();
+    }
 }

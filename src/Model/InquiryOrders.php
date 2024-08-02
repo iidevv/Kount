@@ -75,6 +75,12 @@ class InquiryOrders extends \XLite\Model\AEntity
      */
     protected $auto;
    
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     */
+    protected $zipcode;
 
     /**
      * Get the value of orderid
@@ -216,6 +222,24 @@ class InquiryOrders extends \XLite\Model\AEntity
     public function setOmniscore($omniscore): self
     {
         $this->omniscore = $omniscore;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of zipcode
+     */
+    public function getZipcode(): string
+    {
+        return $this->zipcode;
+    }
+
+    /**
+     * Set the value of zipcode
+     */
+    public function setZipcode(string $zipcode): self
+    {
+        $this->zipcode = $zipcode;
 
         return $this;
     }
