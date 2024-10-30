@@ -162,7 +162,7 @@ class Inquiry
 
             $name = $this->getValidLengthString($item->getName(), 255);
             $description = $item->getSku();
-            $price = $this->getValidNumber($product->getPrice());
+            $price = $this->getValidNumber($item->getTotal());
 
             $cart[] = new \Kount_Ris_Data_CartItem($this->getCategory($product), $name, $description, $item->getAmount(), $price);
         }
