@@ -189,7 +189,7 @@ class Inquiry
 
         $lastCategory = reset($categories);
 
-        return $lastCategory->getName();
+        return $lastCategory ? $lastCategory?->getName() : 'Default';
     }
 
     private function saveInquiryOrder($orderid, $data, $zipcode)
